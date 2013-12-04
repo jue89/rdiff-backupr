@@ -41,7 +41,7 @@
 					$name    = $param[1];
 					$source  = $param[2];
 					$exclude = isset( $param[4] )
-					           ? '--exclude ' . str_replace( ',', ' --exclude', $param[4] ) . ' '
+					           ? '--exclude ' . str_replace( ',', ' --exclude ', $param[4] ) . ' '
 					           : '';
 
 					$cmd = "rdiff-backup --print-statistics "
@@ -59,7 +59,7 @@
 					$name    = $param[1];
 					$source  = $param[2];
 					$exclude = isset( $param[4] )
-					           ? '--exclude ' . str_replace( ',', ' --exclude', $param[4] ) . ' '
+					           ? '--exclude ' . str_replace( ',', ' --exclude ', $param[4] ) . ' '
 					           : '';
 
 					$cmd = "rdiff-backup --print-statistics "
