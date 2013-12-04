@@ -1,0 +1,23 @@
+#!/bin/bash
+
+HOST=$1
+SSH_USER=$2
+MYSQL_USER=$3
+MYSQL_PASS=$4
+
+DATABASES=$(ssh $SSH_USER@$HOST "mysql --user=$MYSQL_USER --password=$MYSQL_PASS -Bse \"show databases\"")
+
+echo "Backup $HOST:";
+
+for db in $DATABASES
+do
+	#Skip information schema
+	if test "$db" = "information_schema"
+	then
+		continue
+	fi
+	
+	echo -n " - $db ..."
+	ssh $SSH_USER@$HOST "mysqldump --user=$MYSQL_USER --password=$MYSQL_PASS --databases $db" > $db.sql
+	echo " ok"
+done

@@ -1,0 +1,13 @@
+<?php
+	
+	/*******************************/
+	/* Configuration rdiff-backupr */
+	/*******************************/
+
+	// Directory for your backups
+	$BACKUP_DIR = "${_SERVER["HOME"]}/backups";
+
+	// Directory where to find the helper scripts
+	$HELPER_DIR = "${_SERVER["HOME"]}/.rdiff-backupr.helper";
+
+	// Yes, thats all for global configuration. Quite easy, isn't it?

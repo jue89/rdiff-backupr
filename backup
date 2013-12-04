@@ -1,0 +1,151 @@
+#!/usr/bin/env php
+<?php
+
+	//// Includes
+
+	// Configuration
+	include( $_SERVER["HOME"] . "/.rdiff-backupr.conf" );
+
+
+
+	//// Functions
+
+	// Reads file specified in $config an executes the backup
+	function backup( $config ) {
+
+		global $HELPER_DIR;
+
+		echo( "Backup $config\n\n" );
+
+		// Root dir of backup
+		$dir = dirname( $config );
+
+		$fd = fopen( $config, 'r' );
+		while( ( $line = fgets( $fd ) ) !== false ) {
+
+			// Trim whitespaces
+			$line = trim( $line );
+
+			// Skip comments and empty lines
+			if( $line == '' || $line[0] == '#' || $line[0] == ';' ) continue;
+
+			// Remove some needless spaces
+			$line = preg_replace( '/\ +/', ' ', $line );
+
+			// Split line at spaces
+			$param = explode( ' ', $line );
+			switch( $param[0] ) {
+
+				// Simple rdiff-backup
+				case 'rdiff-backup':
+					$name    = $param[1];
+					$source  = $param[2];
+					$exclude = isset( $param[4] )
+					           ? '--exclude ' . str_replace( ',', ' --exclude', $param[4] ) . ' '
+					           : '';
+
+					$cmd = "rdiff-backup --print-statistics "
+					     . "$exclude"
+					     . "$source "
+					     . "$dir/$name";
+					echo( "\$ rdiff-backup $exclude$source $dir/$name\n" );
+					passthru( $cmd );
+					echo( "\n\n\n" );
+
+					break;
+
+				// Root rdiff-backup
+				case 'sudo-rdiff-backup':
+					$name    = $param[1];
+					$source  = $param[2];
+					$exclude = isset( $param[4] )
+					           ? '--exclude ' . str_replace( ',', ' --exclude', $param[4] ) . ' '
+					           : '';
+
+					$cmd = "rdiff-backup --print-statistics "
+					     . "$exclude"
+					     . "--remote-schema 'ssh -C %s sudo rdiff-backup --server --restrict-read-only /' "
+					     . "$source "
+					     . "$dir/$name";
+					echo( "\$ $cmd\n" );
+					passthru( $cmd );
+					echo( "\n\n\n" );
+
+					break;
+
+				// Script
+				case 'script':
+					$name   = $param[1];
+					$script = $param[2];
+					$args   = isset( $param[4] )
+					          ? str_replace( '\\,', ',', preg_replace( '/([^\\\\]),/', '\\1 ', $param[4] ) )
+					          : '';
+					$tmp    = "/tmp/rdiff-backupr.$name/";
+
+					// Create temp working directory for script
+					mkdir( $tmp );
+
+					// Switch to working dir
+					$cwd = getcwd();
+					chdir( $tmp );
+
+					// Execute script
+					$cmd = "$HELPER_DIR/$script $args";
+					echo( "\$ $cmd\n" );
+					passthru( $cmd );
+					echo( "\n\n" );
+
+					// Backup results
+					$cmd = "rdiff-backup --print-statistics "
+					     . "$tmp "
+					     . "$dir/$name";
+					echo( "\$ $cmd\n" );
+					passthru( $cmd );
+					echo( "\n\n\n" );
+
+					// Switch back
+					chdir( $cwd );
+
+					// Remove working directory ... the very dirty way.
+					exec( "rm -r $tmp" );
+
+					break;
+
+			}
+
+		}
+
+	}
+
+
+
+	//// Main
+
+	// No arguments given: Backup all data
+	if( $_SERVER["argc"] == 1 ) {
+		
+		foreach( scandir( $BACKUP_DIR ) as $dir ) {
+
+			// Skip hidden dirs / files
+			if( $dir[0] == "." ) continue;
+
+			$config = "$BACKUP_DIR/$dir/backup.conf";
+
+			// Config file exists? --> BACKUP!
+			if( is_file( $config ) ) backup( $config );
+
+		}
+
+	} else {
+		
+		for( $i = 1; $i < $_SERVER["argc"]; $i++ ) {
+
+			$config = $_SERVER["argv"][$i];
+
+			// Config file exists? --> BACKUP!
+			if( is_file( $config ) ) backup( $config );
+			else                     die( "$config not found.\n" );
+
+		}
+
+	}

@@ -1,0 +1,53 @@
+# ---------------------------------- #
+# Sample configuration for a backup. #
+# ---------------------------------- #
+
+
+#
+# // Requirements
+#
+# First of all make sure that the source machine has rdiff-backup installed.
+# Also make sure that you can ssh to that machine without a password prompt.
+# If you don't know how to achieve that ask Google for "ssh-copy-id" ;-)
+# You can test the connection that way:
+# $ rdiff-backup --testserver user@host::path
+#
+
+
+#
+# // Simple Backup without any root previlegs
+#
+# rdiff-backup {name} {source} {max-age} [{exclude},{exclude},...]
+# name   : Name of the target folder. It will be created if it does not exist.
+# source : Source of the backup. [[user@]host::]path
+# max-age: Maximum age for the backup. (Will be implemented later!)
+#          Further details on the rdiff-backup man page. Section "--remove-older-than".
+# exclude: Excludes files / directorys from backup.
+#          Further details on the rdiff-backup man page. Section "--exclude".
+#
+;rdiff-backup home-bob bob@some.server.net::/home/bob 2M .bash_history,.cache
+
+
+#
+# // Simple Backup with root previlegs
+#
+# First of all you have to ensure that the connecting user is allowed to use sudo
+# without a password when calling rdiff-backup. The configuration line in the 
+# sudoers file should look like this:
+# bob ALL=NOPASSWD:/usr/bin/rdiff-backup --server --restrict-read-only /
+#
+# sudo-rdiff-backup {name} {source} {max age} [{exclude},{exclude}]
+# Arguments are explained in the section above.
+#
+;sudo-rdiff-backup full-backup bob@some.server.net::/ 2M /dev,/lost+found,/proc,/sys,/tmp
+
+
+#
+# // Script backup
+#
+# You can use a helper script (specified in ~/.rdiff-backupr.conf) to backup things.
+#
+# script {name} {helper-script} {max-age} [{arg},{arg},...]
+# helper-script: Name of the helper script
+# arg          : Argument that will be privided to the helper script.
+;script database mysqlbackup 2W remote-host,ssh-user,mysql-user,mysql-password
