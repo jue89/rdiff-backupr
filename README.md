@@ -4,7 +4,7 @@ rdiff-backupr
 What the heck?
 --------------
 
-**rdiff-backupr** helps you keeping your backups nicely organized configured just by some easy readable text files. As you might expected it uses *rdiff-backup* in the background. And yes, its name is kind of silly. But hey - it's just a quick and dirty hacked CLI-PHP-Script. In the end its working for all my use cases.
+**rdiff-backupr** helps you keeping your backups nicely organised configured just by some easy readable text files. As you might expected, it uses *rdiff-backup* in the background. And yes, its name is kind of silly. But hey - it's just a quick and dirty hacked CLI-PHP-Script. In the end its working for all my use cases.
 
 This script has been tested with Debian and Ubuntu.
 

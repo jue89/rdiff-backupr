@@ -48,7 +48,7 @@
 					     . "$exclude"
 					     . "$source "
 					     . "$dir/$name";
-					echo( "\$ rdiff-backup $exclude$source $dir/$name\n" );
+					echo( "\$ $cmd\n" );
 					passthru( $cmd );
 					echo( "\n\n\n" );
 
@@ -123,7 +123,7 @@
 
 	// No arguments given: Backup all data
 	if( $_SERVER["argc"] == 1 ) {
-		
+
 		foreach( scandir( $BACKUP_DIR ) as $dir ) {
 
 			// Skip hidden dirs / files
@@ -137,7 +137,7 @@
 		}
 
 	} else {
-		
+
 		for( $i = 1; $i < $_SERVER["argc"]; $i++ ) {
 
 			$config = $_SERVER["argv"][$i];
