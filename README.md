@@ -4,7 +4,7 @@ rdiff-backupr
 What the heck?
 --------------
 
-**rdiff-backupr** helps you keeping your backups nicely organised configured just by some easy readable text files. As you might expected, it uses *rdiff-backup* in the background. And yes, its name is kind of silly. But hey - it's just a quick and dirty hacked CLI-PHP-Script. In the end its working for all my use cases.
+**rdiff-backupr** helps you keeping your backups nicely organised. It is just configured by some easily readable text files. As you might expected, it uses *rdiff-backup* in the background. And yes, its name is kind of silly - but hey - it's just a quick and dirty hacked CLI PHP script. In the end its working for all my use cases.
 
 This script has been tested with Debian and Ubuntu.
 
@@ -25,7 +25,7 @@ Install
 - Create a directory where you would like to keep you backups.
 - Copy *rdiff-backupr.conf.sample* to your home directory and name it *.rdiff-backupr.conf*
 - Edit *~/.rdiff-backupr.conf*
-- Optional: Create a cron job that calls *backup* regularly. (Further details in section Usage.) Don't forget to specify a eMail address for delivering logging informations. **I highly recommend to check these logs!**
+- Optional: Create a cron job that calls *backup* regularly. (Further details in section Usage.) Don't forget to specify an e-mail address for delivering logging informations. **I highly recommend to check these logs!**
 
 
 Configure a backup
